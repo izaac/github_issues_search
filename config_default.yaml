@@ -1,0 +1,14 @@
+users_ids:
+  - izaac
+  - sowmyav27
+  - bmdepesa
+  - slickwarren
+  - aaronRancher
+  - anupama2501
+repos:
+  - 'rancher/rancher'
+  - 'rancher/dashboard'
+  - 'rancher/fleet'
+  - 'rancher/rke'
+  - 'rancher/cis-operator'
+  - 'rancher/backup-operator'
