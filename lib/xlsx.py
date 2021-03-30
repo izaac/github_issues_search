@@ -46,19 +46,19 @@ def write_gh_data_to_worksheet(worksheet, worksheet_data, workbook_formats):
     row = 2
     col = 0
 
-    for name, repo, issue, status, size, url, updated_at in worksheet_data:
+    for name, repo, issue, status, size, url, updated_or_closed_at in worksheet_data:
         bg_yellow = workbook_formats['bg_yellow']
         time_diff_hours = None
+        print(status)
         if size:
-            time_diff_hours = businesshrs.difference(updated_at, today).timedelta.total_seconds() / 3600
-
-        if time_diff_hours and time_diff_hours > 0:
+            time_diff_hours = businesshrs.difference(updated_or_closed_at, today).timedelta.total_seconds() / 3600
+        if (time_diff_hours and time_diff_hours > 0) and status != 'Closed':
             worksheet.write_string(row, col, name, cell_format=bg_yellow)
             worksheet.write_string(row, col + 1, repo, cell_format=bg_yellow)
             worksheet.write_url(row, col + 2, url, string=issue, cell_format=bg_yellow)
             worksheet.write_string(row, col + 3, status, cell_format=bg_yellow)
             worksheet.write_string(row, col + 4, size, cell_format=bg_yellow)
-            worksheet.write_datetime(row, col + 5, updated_at, workbook_formats['date_format_yellow'])
+            worksheet.write_datetime(row, col + 5, updated_or_closed_at, workbook_formats['date_format_yellow'])
             row += 1
             continue
 
@@ -67,5 +67,5 @@ def write_gh_data_to_worksheet(worksheet, worksheet_data, workbook_formats):
         worksheet.write_url(row, col + 2, url, string=issue)
         worksheet.write_string(row, col + 3, status)
         worksheet.write_string(row, col + 4, size)
-        worksheet.write_datetime(row, col + 5, updated_at, workbook_formats['date_format'])
+        worksheet.write_datetime(row, col + 5, updated_or_closed_at, workbook_formats['date_format'])
         row += 1
