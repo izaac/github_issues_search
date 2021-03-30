@@ -41,6 +41,9 @@ def filter_issues(issues):
             filtered_list.append(issue)
         if '[zube]: QA Working' in [x.name for x in issue.labels]:
             filtered_list.append(issue)
+        if issue.repository.name == 'dashboard':
+            if '[zube]: To Test' in [x.name for x in issue.labels]:
+                filtered_list.append(issue)
     return filtered_list
 
 
@@ -52,6 +55,13 @@ def create_date_for_spreadsheet(issues, users):
                 size_label = []
                 if len(issue.labels) > 0:
                     size_label = [label.name for label in issue.labels if label.name in size_labels.keys()]
+                dupes = [wd[2] for wd in worksheet_data if f'{issue.number} {issue.title}' in wd[2]]
+                if len(dupes) > 0:
+                    continue
+                if issue.state == 'closed':
+                    diff = get_start_date() - issue.closed_at
+                    if diff and diff.days > 0:
+                        continue
                 worksheet_data.append([
                     user.name,
                     issue.repository.name,
@@ -59,6 +69,6 @@ def create_date_for_spreadsheet(issues, users):
                     'Closed' if issue.state == 'closed' else 'Working',
                     '' if len(size_label) == 0 else size_label[0],
                     issue.html_url,
-                    issue.updated_at
+                    issue.updated_at if issue.state != 'closed' else issue.closed_at
                 ])
     return worksheet_data
