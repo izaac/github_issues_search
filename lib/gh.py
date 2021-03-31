@@ -22,13 +22,13 @@ def get_all_users_issues(repos, users, milestone):
     working_label = '[zube]: QA Working'
     done_label = '[zube]: Done'
     for repo in repos:
-        if repo.name == 'dashboard':
-            working_label = '[zube]: To Test'
         for user in users:
             o_milestone = None
             milestones = repo.get_milestones(state='open')
             o_milestone = [m for m in milestones if m.title == milestone[0]]
             if repo.name != 'rke':
+                if repo.name == 'dashboard':
+                    working_label = '[zube]: To Test'
                 all_issues.extend(repo.get_issues(assignee=user,
                                                   state='open',
                                                   milestone=o_milestone[0],
@@ -41,6 +41,9 @@ def get_all_users_issues(repos, users, milestone):
                                                   labels=[done_label]
                                                   )
                                   )
+                # set the working label back to QA Working if repo was dashboard
+                if repo.name == 'dashboard':
+                    working_label = '[zube]: QA Working'
             else:
                 all_issues.extend(repo.get_issues(assignee=user,
                                                   state='open',
