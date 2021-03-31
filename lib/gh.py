@@ -17,34 +17,43 @@ def get_users_by_ids(users_ids):
     return users
 
 
-def get_all_users_issues(repos, users):
+def get_all_users_issues(repos, users, milestone):
     all_issues = []
-    dt = get_start_date()
+    working_label = '[zube]: QA Working'
+    done_label = '[zube]: Done'
     for repo in repos:
+        if repo.name == 'dashboard':
+            working_label = '[zube]: To Test'
         for user in users:
-            all_issues.extend(repo.get_issues(assignee=user,
-                                              state='all',
-                                              sort='updated',
-                                              since=dt)
-                              )
+            o_milestone = None
+            milestones = repo.get_milestones(state='open')
+            o_milestone = [m for m in milestones if m.title == milestone[0]]
+            if repo.name != 'rke':
+                all_issues.extend(repo.get_issues(assignee=user,
+                                                  state='open',
+                                                  milestone=o_milestone[0],
+                                                  labels=[working_label],
+                                                  sort='updated')
+                                  )
+                all_issues.extend(repo.get_issues(assignee=user,
+                                                  state='closed',
+                                                  milestone=o_milestone[0],
+                                                  labels=[done_label]
+                                                  )
+                                  )
+            else:
+                all_issues.extend(repo.get_issues(assignee=user,
+                                                  state='open',
+                                                  labels=[working_label],
+                                                  sort='updated')
+                                  )
+                all_issues.extend(repo.get_issues(assignee=user,
+                                                  state='closed',
+                                                  labels=[done_label]
+                                                  )
+                                  )
+
     return all_issues
-
-
-def filter_issues(issues):
-    filtered_list = []
-    for issue in issues:
-        if len(issue.labels) == 0:
-            continue
-        if issue.title in [i.title for i in filtered_list]:
-            continue
-        if issue.state == 'closed':
-            filtered_list.append(issue)
-        if '[zube]: QA Working' in [x.name for x in issue.labels]:
-            filtered_list.append(issue)
-        if issue.repository.name == 'dashboard':
-            if '[zube]: To Test' in [x.name for x in issue.labels]:
-                filtered_list.append(issue)
-    return filtered_list
 
 
 def create_date_for_spreadsheet(issues, users):
