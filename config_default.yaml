@@ -12,3 +12,6 @@ repos:
   - 'rancher/rke'
   - 'rancher/cis-operator'
   - 'rancher/backup-operator'
+milestone:
+  - v2.5.8
+  

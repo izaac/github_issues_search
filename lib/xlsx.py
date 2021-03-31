@@ -49,7 +49,6 @@ def write_gh_data_to_worksheet(worksheet, worksheet_data, workbook_formats):
     for name, repo, issue, status, size, url, updated_or_closed_at in worksheet_data:
         bg_yellow = workbook_formats['bg_yellow']
         time_diff_hours = None
-        print(status)
         if size:
             time_diff_hours = businesshrs.difference(updated_or_closed_at, today).timedelta.total_seconds() / 3600
         if (time_diff_hours and time_diff_hours > 0) and status != 'Closed':

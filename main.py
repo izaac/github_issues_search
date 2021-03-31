@@ -1,7 +1,6 @@
 from lib import github_authenticate
 from lib.dates import set_start_date
 from lib.gh import create_date_for_spreadsheet
-from lib.gh import filter_issues
 from lib.gh import get_filtered_repos
 from lib.gh import get_users_by_ids
 from lib.gh import get_all_users_issues
@@ -13,20 +12,19 @@ import argparse
 
 template = {
     'users_ids': confuse.StrSeq(),
-    'repos': confuse.StrSeq()
+    'repos': confuse.StrSeq(),
+    'milestone': confuse.StrSeq()
 }
 
 
-def main(users_ids, repos):
+def main(users_ids, repos, milestone):
     github_authenticate(args.token)
     set_start_date(args.date)
     repos = get_filtered_repos(repos)
     users = get_users_by_ids(users_ids)
-    all_issues = get_all_users_issues(repos, users)
-    filtered_issue_list = filter_issues(all_issues)
-    del all_issues
+    all_issues = get_all_users_issues(repos, users, milestone)
 
-    worksheet_data = create_date_for_spreadsheet(filtered_issue_list, users)
+    worksheet_data = create_date_for_spreadsheet(all_issues, users)
     workbook, workbook_formats = get_workbook_and_formats()
     worksheet = create_worksheet(workbook, workbook_formats)
     write_gh_data_to_worksheet(worksheet, worksheet_data, workbook_formats)
@@ -45,6 +43,6 @@ if __name__ == '__main__':
     config.set_file('./config_default.yaml')
     config.set_args(args, dots=True)
 
-    print('configuration directory is', config.config_dir())
+    # print('configuration directory is', config.config_dir())
     valid = config.get(template)
-    main(valid.users_ids, valid.repos)
+    main(valid.users_ids, valid.repos, valid.milestone)
