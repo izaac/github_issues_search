@@ -1,6 +1,6 @@
 from lib import github_authenticate
 from lib.dates import set_start_date
-from lib.gh import create_date_for_spreadsheet
+from lib.gh import create_data_for_spreadsheet
 from lib.gh import get_filtered_repos
 from lib.gh import get_users_by_ids
 from lib.gh import get_all_users_issues
@@ -24,7 +24,7 @@ def main(users_ids, repos, milestone):
     users = get_users_by_ids(users_ids)
     all_issues = get_all_users_issues(repos, users, milestone)
 
-    worksheet_data = create_date_for_spreadsheet(all_issues, users)
+    worksheet_data = create_data_for_spreadsheet(all_issues, users)
     workbook, workbook_formats = get_workbook_and_formats()
     worksheet = create_worksheet(workbook, workbook_formats)
     write_gh_data_to_worksheet(worksheet, worksheet_data, workbook_formats)
