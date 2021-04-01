@@ -67,7 +67,8 @@ def create_date_for_spreadsheet(issues, users):
                 size_label = []
                 if len(issue.labels) > 0:
                     size_label = [label.name for label in issue.labels if label.name in size_labels.keys()]
-                dupes = [wd[2] for wd in worksheet_data if f'{issue.number} {issue.title}' in wd[2]]
+                dupes = [wd[2] for wd in worksheet_data
+                         if f'{issue.number} {issue.title}' in wd[2] and user.name in wd[0]]
                 if len(dupes) > 0:
                     continue
                 if issue.state == 'closed':
