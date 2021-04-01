@@ -31,7 +31,7 @@ def create_worksheet(workbook, formats):
     worksheet.set_column(1, 1, 15)
     worksheet.set_column(2, 2, 50)
     worksheet.set_column(5, 5, 25)
-    worksheet.write('A1', f'Since {dt.strftime("%b %d %Y %H:%M:%S")}', bold)
+    worksheet.write('A1', f'Since {dt.strftime("%b %d %Y")}', bold)
     worksheet.write('A2', 'Person', bold)
     worksheet.write('B2', 'Repo', bold)
     worksheet.write('C2', 'Issue', bold)

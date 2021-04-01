@@ -59,7 +59,7 @@ def get_all_users_issues(repos, users, milestone):
     return all_issues
 
 
-def create_date_for_spreadsheet(issues, users):
+def create_data_for_spreadsheet(issues, users):
     worksheet_data = []
     for issue in issues:
         for user in users:
@@ -75,6 +75,16 @@ def create_date_for_spreadsheet(issues, users):
                     diff = get_start_date() - issue.closed_at
                     if diff and diff.days > 0:
                         continue
+                test_event_date = None
+                for e in issue.get_events().reversed:
+                    if issue.repository.name == 'dashboard':
+                        if e.event == 'labeled' and e.label.name == '[zube]: To Test':
+                            test_event_date = e.created_at
+                            break
+                    else:
+                        if e.event == 'labeled' and e.label.name == '[zube]: QA Working':
+                            test_event_date = e.created_at
+                            break
                 worksheet_data.append([
                     user.name,
                     issue.repository.name,
@@ -82,6 +92,6 @@ def create_date_for_spreadsheet(issues, users):
                     'Closed' if issue.state == 'closed' else 'Working',
                     '' if len(size_label) == 0 else size_label[0],
                     issue.html_url,
-                    issue.updated_at if issue.state != 'closed' else issue.closed_at
+                    test_event_date if issue.state != 'closed' else issue.closed_at
                 ])
     return worksheet_data
