@@ -95,3 +95,31 @@ def create_data_for_spreadsheet(issues, users):
                     test_event_date if issue.state != 'closed' else issue.closed_at
                 ])
     return worksheet_data
+
+
+def create_to_test_data_for_spreadsheet(issues, users):
+    worksheet_data = []
+    for issue in issues:
+        for user in users:
+            if user in issue.assignees:
+                dupes = [wd[2] for wd in worksheet_data
+                         if f'{issue.number} {issue.title}' in wd[2] and user.name in wd[0]]
+                if len(dupes) > 0:
+                    continue
+                to_test_event_date = None
+                for e in issue.get_events():
+                    if e.event == 'labeled' and e.label.name == '[zube]: To Test':
+                        to_test_event_date = e.created_at
+                        break
+                if to_test_event_date is None:
+                    # issue has no event [zube]: To Test -> drop it
+                    continue
+                worksheet_data.append([
+                    user.name,
+                    issue.repository.name,
+                    f'{issue.number} {issue.title}',
+                    'Closed' if issue.state == 'closed' else 'Working',
+                    issue.html_url,
+                    to_test_event_date
+                ])
+    return worksheet_data
