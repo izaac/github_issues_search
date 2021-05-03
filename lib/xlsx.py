@@ -45,7 +45,7 @@ def create_to_test_worksheet(workbook, formats):
     worksheet.set_column(0, 0, 25)
     worksheet.set_column(1, 1, 15)
     worksheet.set_column(2, 2, 50)
-    worksheet.set_column(5, 5, 25)
+    worksheet.set_column(4, 5, 25)
     worksheet.write('A1', 'FIRST TIME TO TEST ISSUES', bold)
     worksheet.write('A2', 'Person', bold)
     worksheet.write('B2', 'Repo', bold)

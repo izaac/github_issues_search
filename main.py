@@ -5,6 +5,7 @@ from lib.gh import create_to_test_data_for_spreadsheet
 from lib.gh import get_filtered_repos
 from lib.gh import get_users_by_ids
 from lib.gh import get_all_users_issues
+from lib.gh import get_all_users_issues_label
 from lib.xlsx import create_worksheet
 from lib.xlsx import create_to_test_worksheet
 from lib.xlsx import get_workbook_and_formats
@@ -16,7 +17,8 @@ import argparse
 template = {
     'users_ids': confuse.StrSeq(),
     'repos': confuse.StrSeq(),
-    'milestone': confuse.StrSeq()
+    'milestone': confuse.StrSeq(),
+    'rke_milestone': confuse.StrSeq()
 }
 
 
@@ -34,12 +36,12 @@ def main(users_ids, repos, milestone):
     workbook.close()
 
 
-def get_to_test(users_ids, repos, milestone):
+def get_to_test(users_ids, repos, milestone, rke_milestone):
     print('GET TO TEST METHOD')
     github_authenticate(args.token)
     repos = get_filtered_repos(repos)
     users = get_users_by_ids(users_ids)
-    all_issues = get_all_users_issues(repos, users, milestone)
+    all_issues = get_all_users_issues_label(repos, users, milestone, rke_milestone)
     worksheet_data = create_to_test_data_for_spreadsheet(all_issues, users)
     workbook, workbook_formats = get_workbook_and_formats()
     worksheet = create_to_test_worksheet(workbook, workbook_formats)
@@ -63,6 +65,6 @@ if __name__ == '__main__':
     print(config.keys())
     valid = config.get(template)
     if 'totest' in config.keys():
-        get_to_test(valid.users_ids, valid.repos, valid.milestone)
+        get_to_test(valid.users_ids, valid.repos, valid.milestone, valid.rke_milestone)
     else:
         main(valid.users_ids, valid.repos, valid.milestone)
