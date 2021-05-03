@@ -63,11 +63,8 @@ def get_all_users_issues_label(repos, users, milestone, rke_milestone=''):
     for repo in repos:
         milestones = repo.get_milestones(state='open')
         o_milestone = [m for m in milestones if m.title == milestone[0]]
-        print('MILESTONE')
-        print(o_milestone)
         for user in users:
             if len(o_milestone) > 0:
-                print('GETTING ISSUES')
                 issues = repo.get_issues(assignee=user,
                                          state='all',
                                          milestone=o_milestone[0],
@@ -75,17 +72,13 @@ def get_all_users_issues_label(repos, users, milestone, rke_milestone=''):
                 all_issues.extend(issues)
             else:
                 if repo.name == 'rke' and rke_milestone != '':
-                    print('GETTING RKE ISSUES')
                     milestones = repo.get_milestones(state='open')
                     o_milestone = [m for m in milestones if m.title == rke_milestone[0]]
-                    print('RKE_MILESTONE')
-                    print(o_milestone)
                     all_issues.extend(repo.get_issues(assignee=user,
                                                       state='all',
                                                       milestone=o_milestone[0],
                                                       )
                                       )
-    print(all_issues)
     return all_issues
 
 

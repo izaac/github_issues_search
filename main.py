@@ -37,7 +37,6 @@ def main(users_ids, repos, milestone):
 
 
 def get_to_test(users_ids, repos, milestone, rke_milestone):
-    print('GET TO TEST METHOD')
     github_authenticate(args.token)
     repos = get_filtered_repos(repos)
     users = get_users_by_ids(users_ids)
